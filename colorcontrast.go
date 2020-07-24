@@ -5,7 +5,7 @@ import (
 	"math"
 )
 
-// CalcContrastRatio a
+// CalcContrastRatio calculate WCAG contrast ratio
 func CalcContrastRatio(foreground, background color.Color) float64 {
 	bgOnWhite := alphaBlend(background, color.White)
 	bgOnBlack := alphaBlend(background, color.Black)
