@@ -7,37 +7,26 @@ import (
 
 // CalcContrastRatio calculate WCAG contrast ratio
 func CalcContrastRatio(foreground, background color.Color) float64 {
-	l1 := getRelativeLuminance(background)
+	l1 := getRelativeLuminance(background.RGBA())
 	l2 := getRelativeLuminance(alphaBlend(foreground, background))
 
 	// https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
 	return (math.Max(l1, l2) + 0.05) / (math.Min(l1, l2) + 0.05)
 }
 
-func alphaBlend(foreground, background color.Color) color.RGBA {
+func alphaBlend(foreground, background color.Color) (r, g, b, a uint32) {
 	fr, fg, fb, fa := foreground.RGBA()
 	br, bg, bb, _ := background.RGBA()
 
-	fr >>= 8
-	fg >>= 8
-	fb >>= 8
-	fa >>= 8
-	br >>= 8
-	bg >>= 8
-	bb >>= 8
-
-	return color.RGBA{
-		R: uint8(math.Round(float64(fr*fa+br*(0xFF-fa)) / 0xFF)),
-		G: uint8(math.Round(float64(fg*fa+bg*(0xFF-fa)) / 0xFF)),
-		B: uint8(math.Round(float64(fb*fa+bb*(0xFF-fa)) / 0xFF)),
-		A: 0xFF,
-	}
+	r = uint32((fr*fa + br*(0xFFFF-fa)) >> 16)
+	g = uint32((fg*fa + bg*(0xFFFF-fa)) >> 16)
+	b = uint32((fb*fa + bb*(0xFFFF-fa)) >> 16)
+	a = 0xFFFF
+	return
 }
 
-func getRelativeLuminance(c color.Color) float64 {
+func getRelativeLuminance(cr, cg, cb, _ uint32) float64 {
 	// https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
-	cr, cg, cb, _ := c.RGBA()
-
 	r := float64(cr>>8) / 0xFF
 	g := float64(cg>>8) / 0xFF
 	b := float64(cb>>8) / 0xFF
