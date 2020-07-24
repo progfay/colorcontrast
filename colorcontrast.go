@@ -52,21 +52,21 @@ func getRelativeLuminance(c color.Color) float64 {
 	b := float64(cb) / 65535
 
 	if r <= 0.03928 {
-					r = r / 12.92
+		r = r / 12.92
 	} else {
-					r = math.Pow((r+0.055)/1.055, 2.4)
+		r = math.Pow((r+0.055)/1.055, 2.4)
 	}
 
 	if g <= 0.03928 {
-					g = g / 12.92
+		g = g / 12.92
 	} else {
-					g = math.Pow((g+0.055)/1.055, 2.4)
+		g = math.Pow((g+0.055)/1.055, 2.4)
 	}
 
 	if b <= 0.03928 {
-					b = b / 12.92
+		b = b / 12.92
 	} else {
-					b = math.Pow((b+0.055)/1.055, 2.4)
+		b = math.Pow((b+0.055)/1.055, 2.4)
 	}
 
 	return 0.2126*r + 0.7152*g + 0.0722*b
