@@ -29,6 +29,11 @@ var testcases = []struct {
 		color.RGBA{R: 0, G: 0, B: 255, A: 255},
 		2.14,
 	},
+	{
+		color.RGBA{R: 128, G: 32, B: 32, A: 128},
+		color.White,
+		2.78,
+	},
 }
 
 func TestColorContrast(t *testing.T) {
