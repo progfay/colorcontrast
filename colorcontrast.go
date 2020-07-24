@@ -7,20 +7,11 @@ import (
 
 // CalcContrastRatio calculate WCAG contrast ratio
 func CalcContrastRatio(foreground, background color.Color) float64 {
-	bgOnWhite := alphaBlend(background, color.White)
-	bgOnBlack := alphaBlend(background, color.Black)
+	l1 := getRelativeLuminance(background)
+	l2 := getRelativeLuminance(alphaBlend(foreground, background))
 
-	lWhite := getRelativeLuminance(bgOnWhite)
-	lBlack := getRelativeLuminance(bgOnBlack)
-	lFg := getRelativeLuminance(foreground)
-
-	if lWhite < lFg {
-		return getContrastRatioOpaque(foreground, bgOnWhite)
-	} else if lBlack > lFg {
-		return getContrastRatioOpaque(foreground, bgOnBlack)
-	} else {
-		return 1
-	}
+	// https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
+	return (math.Max(l1, l2) + 0.05) / (math.Min(l1, l2) + 0.05)
 }
 
 func alphaBlend(foreground, background color.Color) color.RGBA {
@@ -41,14 +32,6 @@ func alphaBlend(foreground, background color.Color) color.RGBA {
 		B: uint8(math.Round(float64(fb*fa+bb*(0xFF-fa)) / 0xFF)),
 		A: 0xFF,
 	}
-}
-
-func getContrastRatioOpaque(foreground, background color.Color) float64 {
-	l1 := getRelativeLuminance(background)
-	l2 := getRelativeLuminance(alphaBlend(foreground, background))
-
-	// https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
-	return (math.Max(l1, l2) + 0.05) / (math.Min(l1, l2) + 0.05)
 }
 
 func getRelativeLuminance(c color.Color) float64 {
