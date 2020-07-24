@@ -28,9 +28,9 @@ func alphaBlend(foreground, background color.Color) color.RGBA {
 	br, bg, bb, _ := background.RGBA()
 
 	return color.RGBA{
-		R: uint8((fr*fa + br*(0xFFFF-fa)) / 65535),
-		G: uint8((fg*fa + bg*(0xFFFF-fa)) / 65535),
-		B: uint8((fb*fa + bb*(0xFFFF-fa)) / 65535),
+		R: uint8((fr*fa + br*(0xFFFF-fa)) / 0xFFFF),
+		G: uint8((fg*fa + bg*(0xFFFF-fa)) / 0xFFFF),
+		B: uint8((fb*fa + bb*(0xFFFF-fa)) / 0xFFFF),
 		A: 0xFF,
 	}
 }
@@ -47,9 +47,9 @@ func getRelativeLuminance(c color.Color) float64 {
 	// https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
 	cr, cg, cb, _ := c.RGBA()
 
-	r := float64(cr) / 65535
-	g := float64(cg) / 65535
-	b := float64(cb) / 65535
+	r := float64(cr) / 0xFFFF
+	g := float64(cg) / 0xFFFF
+	b := float64(cb) / 0xFFFF
 
 	if r <= 0.03928 {
 		r = r / 12.92
